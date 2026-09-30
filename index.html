@@ -9,25 +9,45 @@
 
   <style>
 
+    /* =========================
+       RESET
+    ========================= */
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+
+    /* =========================
+       PAGE
+    ========================= */
+
     html,
     body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background: #000;
+
+      /* Transparent instead of black */
+      background: transparent;
     }
+
+
+    /* =========================
+       CONTAINER
+    ========================= */
 
     .container {
       position: relative;
+
       width: 100%;
       height: 100vh;
+
       overflow: hidden;
+
+      background: transparent;
     }
 
 
@@ -43,7 +63,13 @@
       width: 100%;
       height: 100%;
 
+      /*
+        Keeps the video filling
+        the entire screen
+      */
       object-fit: cover;
+
+      display: block;
     }
 
 
@@ -70,6 +96,7 @@
       pointer-events: none;
     }
 
+
     #video2.show {
       opacity: 1;
 
@@ -91,8 +118,14 @@
       pointer-events: none;
 
       overflow: hidden;
+
+      background: transparent;
     }
 
+
+    /* =========================
+       CONFETTI PIECES
+    ========================= */
 
     .piece {
       position: absolute;
@@ -114,6 +147,10 @@
         forwards;
     }
 
+
+    /* =========================
+       CONFETTI ANIMATION
+    ========================= */
 
     @keyframes confettiExplosion {
 
@@ -149,8 +186,8 @@
 
 
     /* =========================
-       TAP AREA
-       ONLY ACTIVE ON VIDEO 2
+       INVISIBLE TAP AREA
+       VIDEO 2 ONLY
     ========================= */
 
     #tapArea {
@@ -158,6 +195,11 @@
       position: absolute;
 
       z-index: 20;
+
+      /*
+        Large invisible area
+        in the center
+      */
 
       width: 70%;
       height: 45%;
@@ -183,8 +225,8 @@
 
 
     /*
-      Show tap area only
-      when Video 2 starts
+      Activated only when
+      Video 2 starts
     */
 
     #tapArea.active {
@@ -245,7 +287,7 @@
 
   <!-- =========================
        CONFETTI
-  ========================= -->
+    ========================= -->
 
   <div id="confetti"></div>
 
@@ -265,6 +307,10 @@
 <script>
 
 
+  /* =========================
+     ELEMENTS
+  ========================= */
+
   const video1 =
     document.getElementById("video1");
 
@@ -282,9 +328,9 @@
 
 
 
-  /* =================================
+  /* =========================
      START VIDEO 1
-  ================================= */
+  ========================= */
 
   video1.play().catch(error => {
 
@@ -297,9 +343,9 @@
 
 
 
-  /* =================================
+  /* =========================
      VIDEO 1 FINISHED
-  ================================= */
+  ========================= */
 
   video1.addEventListener(
     "ended",
@@ -316,9 +362,9 @@
     );
 
 
-    /*
-      Start Video 2
-    */
+    /* -------------------------
+       Start Video 2
+    ------------------------- */
 
     video2.currentTime = 0;
 
@@ -333,18 +379,18 @@
     });
 
 
-    /*
-      Show Video 2
-    */
+    /* -------------------------
+       Show Video 2
+    ------------------------- */
 
     video2.classList.add(
       "show"
     );
 
 
-    /*
-      Hide Video 1
-    */
+    /* -------------------------
+       Hide Video 1
+    ------------------------- */
 
     setTimeout(() => {
 
@@ -354,21 +400,19 @@
     }, 200);
 
 
-    /*
-      IMPORTANT:
-      Activate the invisible
-      clickable area ONLY NOW.
-    */
+    /* -------------------------
+       Activate tap area
+       ONLY FOR VIDEO 2
+    ------------------------- */
 
     tapArea.classList.add(
       "active"
     );
 
 
-    /*
-      Start confetti
-      on top of Video 2
-    */
+    /* -------------------------
+       Start Confetti
+    ------------------------- */
 
     createConfetti();
 
@@ -376,9 +420,9 @@
 
 
 
-  /* =================================
+  /* =========================
      CREATE CONFETTI
-  ================================= */
+  ========================= */
 
   function createConfetti() {
 
@@ -419,9 +463,9 @@
         "piece";
 
 
-      /*
-        Random explosion direction
-      */
+      /* -------------------------
+         Random Direction
+      ------------------------- */
 
       const angle =
         Math.random()
@@ -429,9 +473,9 @@
         * 2;
 
 
-      /*
-        Distance from center
-      */
+      /* -------------------------
+         Random Distance
+      ------------------------- */
 
       const distance =
         300 +
@@ -448,9 +492,9 @@
         * distance;
 
 
-      /*
-        Send values to CSS
-      */
+      /* -------------------------
+         CSS Variables
+      ------------------------- */
 
       piece.style.setProperty(
         "--x",
@@ -464,9 +508,9 @@
       );
 
 
-      /*
-        Random rotation
-      */
+      /* -------------------------
+         Random Rotation
+      ------------------------- */
 
       piece.style.setProperty(
         "--rotation",
@@ -477,9 +521,9 @@
       );
 
 
-      /*
-        Random color
-      */
+      /* -------------------------
+         Random Color
+      ------------------------- */
 
       piece.style.background =
         colors[
@@ -490,9 +534,9 @@
         ];
 
 
-      /*
-        Random size
-      */
+      /* -------------------------
+         Random Size
+      ------------------------- */
 
       piece.style.width =
         (
@@ -508,9 +552,9 @@
         ) + "px";
 
 
-      /*
-        Small random delay
-      */
+      /* -------------------------
+         Random Delay
+      ------------------------- */
 
       piece.style.animationDelay =
         (
@@ -518,9 +562,9 @@
         ) + "s";
 
 
-      /*
-        Add to screen
-      */
+      /* -------------------------
+         Add Piece
+      ------------------------- */
 
       confetti.appendChild(
         piece
@@ -529,9 +573,9 @@
     }
 
 
-    /*
-      Remove after animation
-    */
+    /* -------------------------
+       Remove Confetti
+    ------------------------- */
 
     setTimeout(() => {
 
@@ -543,17 +587,16 @@
 
 
 
-  /* =================================
-     TAP / CLICK
+  /* =========================
+     REDIRECT
      VIDEO 2 ONLY
-  ================================= */
+  ========================= */
 
   function redirectToCanva() {
 
     /*
-      Extra safety:
-      Only redirect if Video 2
-      is currently visible.
+      Make sure Video 2
+      is currently active
     */
 
     if (
@@ -569,9 +612,9 @@
 
 
 
-  /*
-    Desktop click
-  */
+  /* =========================
+     DESKTOP CLICK
+  ========================= */
 
   tapArea.addEventListener(
     "click",
@@ -580,9 +623,9 @@
 
 
 
-  /*
-    Mobile touch
-  */
+  /* =========================
+     MOBILE TOUCH
+  ========================= */
 
   tapArea.addEventListener(
     "touchend",
