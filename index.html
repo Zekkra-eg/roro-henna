@@ -47,14 +47,18 @@
     }
 
 
-    /* VIDEO 1 */
+    /* =========================
+       VIDEO 1
+    ========================= */
 
     #video1 {
       z-index: 1;
     }
 
 
-    /* VIDEO 2 */
+    /* =========================
+       VIDEO 2
+    ========================= */
 
     #video2 {
       z-index: 2;
@@ -62,10 +66,14 @@
       opacity: 0;
 
       transition: opacity 0.15s ease;
+
+      pointer-events: none;
     }
 
     #video2.show {
       opacity: 1;
+
+      pointer-events: auto;
     }
 
 
@@ -122,7 +130,6 @@
 
 
       15% {
-
         opacity: 1;
       }
 
@@ -143,6 +150,7 @@
 
     /* =========================
        TAP AREA
+       ONLY ACTIVE ON VIDEO 2
     ========================= */
 
     #tapArea {
@@ -150,11 +158,6 @@
       position: absolute;
 
       z-index: 20;
-
-      /*
-        Large invisible area
-        in the center of the screen
-      */
 
       width: 70%;
       height: 45%;
@@ -164,16 +167,28 @@
 
       cursor: pointer;
 
-      /*
-        Completely invisible
-      */
-
       background: transparent;
 
-      -webkit-tap-highlight-color:
-        transparent;
+      -webkit-tap-highlight-color: transparent;
 
       user-select: none;
+
+      /*
+        Hidden while Video 1
+        is playing
+      */
+
+      display: none;
+    }
+
+
+    /*
+      Show tap area only
+      when Video 2 starts
+    */
+
+    #tapArea.active {
+      display: block;
     }
 
 
@@ -237,6 +252,7 @@
 
   <!-- =========================
        INVISIBLE TAP AREA
+       ONLY VIDEO 2
   ========================= -->
 
   <div id="tapArea"></div>
@@ -301,7 +317,7 @@
 
 
     /*
-      Start video 2
+      Start Video 2
     */
 
     video2.currentTime = 0;
@@ -318,7 +334,7 @@
 
 
     /*
-      Show video 2
+      Show Video 2
     */
 
     video2.classList.add(
@@ -327,7 +343,7 @@
 
 
     /*
-      Hide video 1
+      Hide Video 1
     */
 
     setTimeout(() => {
@@ -340,11 +356,18 @@
 
     /*
       IMPORTANT:
-      Confetti starts AFTER
-      video 2 appears.
+      Activate the invisible
+      clickable area ONLY NOW.
+    */
 
-      Therefore it appears
-      directly ON TOP of video 2.
+    tapArea.classList.add(
+      "active"
+    );
+
+
+    /*
+      Start confetti
+      on top of Video 2
     */
 
     createConfetti();
@@ -358,7 +381,6 @@
   ================================= */
 
   function createConfetti() {
-
 
     confetti.innerHTML = "";
 
@@ -522,23 +544,44 @@
 
 
   /* =================================
-     TAP / CLICK REDIRECT
+     TAP / CLICK
+     VIDEO 2 ONLY
   ================================= */
 
-  tapArea.addEventListener(
-    "click",
-    function() {
+  function redirectToCanva() {
+
+    /*
+      Extra safety:
+      Only redirect if Video 2
+      is currently visible.
+    */
+
+    if (
+      video2.classList.contains("show")
+    ) {
 
       window.location.href =
         "https://zekkra.my.canva.site/roro-henna";
 
     }
-  );
+
+  }
+
 
 
   /*
-    Also support touch directly
-    on mobile devices.
+    Desktop click
+  */
+
+  tapArea.addEventListener(
+    "click",
+    redirectToCanva
+  );
+
+
+
+  /*
+    Mobile touch
   */
 
   tapArea.addEventListener(
@@ -547,8 +590,7 @@
 
       event.preventDefault();
 
-      window.location.href =
-        "https://zekkra.my.canva.site/roro-henna";
+      redirectToCanva();
 
     },
     {
