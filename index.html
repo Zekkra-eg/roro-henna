@@ -36,6 +36,9 @@
       width: 100%;
       height: 100%;
 
+      margin: 0;
+      padding: 0;
+
       overflow: hidden;
 
       background: transparent;
@@ -44,7 +47,7 @@
 
 
     /* =========================
-       MAIN CONTAINER
+       CONTAINER
     ========================= */
 
     .container {
@@ -81,20 +84,12 @@
     }
 
 
-    /* =========================
-       VIDEO 1
-    ========================= */
-
     #video1 {
 
       z-index: 1;
 
     }
 
-
-    /* =========================
-       VIDEO 2
-    ========================= */
 
     #video2 {
 
@@ -125,7 +120,14 @@
 
     #song {
 
-      display: none;
+      position: absolute;
+
+      width: 1px;
+      height: 1px;
+
+      opacity: 0;
+
+      pointer-events: none;
 
     }
 
@@ -151,10 +153,6 @@
     }
 
 
-    /* =========================
-       CONFETTI PIECES
-    ========================= */
-
     .piece {
 
       position: absolute;
@@ -170,34 +168,22 @@
       border-radius: 2px;
 
       animation:
-
         confettiExplosion
-
         2.8s
-
         cubic-bezier(.15, .7, .3, 1)
-
         forwards;
 
     }
 
-
-    /* =========================
-       CONFETTI ANIMATION
-    ========================= */
 
     @keyframes confettiExplosion {
 
       0% {
 
         transform:
-
           translate(-50%, -50%)
-
           translate(0, 0)
-
           rotate(0deg)
-
           scale(0.4);
 
         opacity: 1;
@@ -215,13 +201,9 @@
       100% {
 
         transform:
-
           translate(-50%, -50%)
-
           translate(var(--x), var(--y))
-
           rotate(var(--rotation))
-
           scale(1);
 
         opacity: 0;
@@ -232,7 +214,7 @@
 
 
     /* =========================
-       INVISIBLE TAP AREA
+       TAP AREA
     ========================= */
 
     #tapArea {
@@ -255,6 +237,8 @@
 
       user-select: none;
 
+      touch-action: manipulation;
+
       display: none;
 
     }
@@ -268,7 +252,7 @@
 
 
     /* =========================
-       CANVA CONTAINER
+       CANVA
     ========================= */
 
     #canvaContainer {
@@ -298,10 +282,6 @@
     }
 
 
-    /* =========================
-       CANVA IFRAME
-    ========================= */
-
     #canvaFrame {
 
       position: absolute;
@@ -312,7 +292,7 @@
       width: 100%;
       height: 100%;
 
-      border: none;
+      border: 0;
 
       padding: 0;
       margin: 0;
@@ -320,7 +300,6 @@
       display: block;
 
     }
-
 
   </style>
 
@@ -342,6 +321,7 @@
     autoplay
     muted
     playsinline
+    webkit-playsinline
     preload="auto"
   >
 
@@ -361,6 +341,7 @@
     id="video2"
     muted
     playsinline
+    webkit-playsinline
     loop
     preload="auto"
   >
@@ -375,11 +356,12 @@
 
   <!-- =========================
        AUDIO
-    ========================= -->
+  ========================= -->
 
   <audio
     id="song"
     preload="auto"
+    playsinline
   >
 
     <source
@@ -398,34 +380,29 @@
 
 
   <!-- =========================
-       INVISIBLE TAP AREA
+       TAP AREA
   ========================= -->
 
   <div id="tapArea"></div>
 
 
   <!-- =========================
-       CANVA EMBED
+       CANVA
   ========================= -->
 
   <div id="canvaContainer">
 
     <iframe
       id="canvaFrame"
-
-      src=""
-
-      allowfullscreen
-
+      title="Invitation"
       allow="fullscreen"
-
+      allowfullscreen
     ></iframe>
 
   </div>
 
 
 </div>
-
 
 
 <script>
@@ -443,16 +420,16 @@
     document.getElementById("video2");
 
 
+  const song =
+    document.getElementById("song");
+
+
   const confetti =
     document.getElementById("confetti");
 
 
   const tapArea =
     document.getElementById("tapArea");
-
-
-  const song =
-    document.getElementById("song");
 
 
   const canvaContainer =
@@ -472,18 +449,17 @@
   ========================= */
 
   const CANVA_URL =
-
     "https://www.canva.com/design/DAHWsDYPq3k/BJt-oUK1cNMC3uRSdF-f0w/view?embed";
 
 
   /* =========================
-     START VIDEO 1
+     VIDEO 1
   ========================= */
 
   video1.play().catch(error => {
 
     console.log(
-      "Video 1 autoplay:",
+      "Video 1 autoplay blocked:",
       error
     );
 
@@ -491,29 +467,21 @@
 
 
   /* =========================
-     VIDEO 1 FINISHED
+     VIDEO 1 ENDED
   ========================= */
 
   video1.addEventListener(
-
     "ended",
-
     startVideo2
-
   );
 
 
+  /* =========================
+     START VIDEO 2
+  ========================= */
+
   function startVideo2() {
 
-
-    console.log(
-      "Video 1 finished"
-    );
-
-
-    /* -------------------------
-       Start Video 2
-    ------------------------- */
 
     video2.currentTime = 0;
 
@@ -528,18 +496,10 @@
     });
 
 
-    /* -------------------------
-       Show Video 2
-    ------------------------- */
-
     video2.classList.add(
       "show"
     );
 
-
-    /* -------------------------
-       Hide Video 1
-    ------------------------- */
 
     setTimeout(() => {
 
@@ -549,18 +509,10 @@
     }, 200);
 
 
-    /* -------------------------
-       Activate Tap Area
-    ------------------------- */
-
     tapArea.classList.add(
       "active"
     );
 
-
-    /* -------------------------
-       Start Confetti
-    ------------------------- */
 
     createConfetti();
 
@@ -568,7 +520,7 @@
 
 
   /* =========================
-     CREATE CONFETTI
+     CONFETTI
   ========================= */
 
   function createConfetti() {
@@ -580,19 +532,12 @@
     const colors = [
 
       "#FFD166",
-
       "#EF476F",
-
       "#06D6A0",
-
       "#118AB2",
-
       "#8338EC",
-
       "#FF9F1C",
-
       "#FF70A6",
-
       "#FFFFFF"
 
     ];
@@ -602,18 +547,13 @@
 
 
     for (
-
       let i = 0;
-
       i < pieces;
-
       i++
-
     ) {
 
 
       const piece =
-
         document.createElement(
           "div"
         );
@@ -623,148 +563,76 @@
         "piece";
 
 
-      /* -------------------------
-         Random Direction
-      ------------------------- */
-
       const angle =
-
         Math.random()
-
         * Math.PI
-
         * 2;
 
 
-      /* -------------------------
-         Random Distance
-      ------------------------- */
-
       const distance =
-
         300 +
-
         Math.random() * 650;
 
 
       const x =
-
         Math.cos(angle)
-
         * distance;
 
 
       const y =
-
         Math.sin(angle)
-
         * distance;
 
 
-      /* -------------------------
-         Position
-      ------------------------- */
-
       piece.style.setProperty(
-
         "--x",
-
         x + "px"
-
       );
 
 
       piece.style.setProperty(
-
         "--y",
-
         y + "px"
-
       );
 
-
-      /* -------------------------
-         Rotation
-      ------------------------- */
 
       piece.style.setProperty(
-
         "--rotation",
-
         (
-
-          Math.random()
-
-          * 1200
-
+          Math.random() * 1200
           - 600
-
         ) + "deg"
-
       );
 
-
-      /* -------------------------
-         Color
-      ------------------------- */
 
       piece.style.background =
-
         colors[
-
           Math.floor(
-
             Math.random()
-
             * colors.length
-
           )
-
         ];
 
 
-      /* -------------------------
-         Size
-      ------------------------- */
-
       piece.style.width =
-
         (
-
           5 +
-
           Math.random() * 8
-
         ) + "px";
 
 
       piece.style.height =
-
         (
-
           8 +
-
           Math.random() * 16
-
         ) + "px";
 
 
-      /* -------------------------
-         Delay
-      ------------------------- */
-
       piece.style.animationDelay =
-
         (
-
           Math.random() * 0.12
-
         ) + "s";
 
-
-      /* -------------------------
-         Add
-      ------------------------- */
 
       confetti.appendChild(
         piece
@@ -772,10 +640,6 @@
 
     }
 
-
-    /* -------------------------
-       Remove
-    ------------------------- */
 
     setTimeout(() => {
 
@@ -788,16 +652,26 @@
 
   /* =========================
      PLAY SONG
+     SAFARI IMPORTANT
   ========================= */
 
-  function playSong() {
+  function playSongFromGesture() {
+
+
+    /*
+      Make sure audio is loaded.
+    */
+
+    song.load();
 
 
     song.volume = 1;
 
 
-    song.currentTime = 0;
-
+    /*
+      Start directly from
+      the user interaction.
+    */
 
     const playPromise =
       song.play();
@@ -807,14 +681,22 @@
       playPromise !== undefined
     ) {
 
-      playPromise.catch(error => {
+      playPromise
+        .then(() => {
 
-        console.log(
-          "Audio play error:",
-          error
-        );
+          console.log(
+            "Song started successfully"
+          );
 
-      });
+        })
+        .catch(error => {
+
+          console.log(
+            "Safari audio blocked:",
+            error
+          );
+
+        });
 
     }
 
@@ -828,70 +710,76 @@
   function showCanva() {
 
 
-    /* -------------------------
-       Load Canva
-    ------------------------- */
-
-    canvaFrame.src =
-      CANVA_URL;
-
-
-    /* -------------------------
-       Hide Video 2
-    ------------------------- */
+    /*
+      Stop Video 2.
+    */
 
     video2.pause();
 
+
+    /*
+      Hide Video 2.
+    */
 
     video2.style.display =
       "none";
 
 
-    /* -------------------------
-       Hide Tap Area
-    ------------------------- */
+    /*
+      Hide tap area.
+    */
 
     tapArea.style.display =
       "none";
 
 
-    /* -------------------------
-       Remove Confetti
-    ------------------------- */
+    /*
+      Remove confetti.
+    */
 
     confetti.innerHTML =
       "";
 
 
-    /* -------------------------
-       Show Canva
-    ------------------------- */
+    /*
+      Show Canva container FIRST.
+    */
 
     canvaContainer.classList.add(
       "show"
     );
+
+
+    /*
+      Load Canva AFTER
+      the audio has started.
+    */
+
+    setTimeout(() => {
+
+      canvaFrame.src =
+        CANVA_URL;
+
+    }, 50);
 
   }
 
 
   /* =========================
      OPEN INVITATION
-    ========================= */
+  ========================= */
 
-  function openInvitation() {
+  let opened = false;
+
+
+  function openInvitation(event) {
 
 
     /*
-      Only work during Video 2
+      Prevent double activation.
     */
 
-    if (
-
-      !video2.classList.contains(
-        "show"
-      )
-
-    ) {
+    if (opened) {
 
       return;
 
@@ -899,13 +787,35 @@
 
 
     /*
-      IMPORTANT:
-
-      Audio starts directly
-      from the user's gesture.
+      Only Video 2.
     */
 
-    playSong();
+    if (
+      !video2.classList.contains(
+        "show"
+      )
+    ) {
+
+      return;
+
+    }
+
+
+    opened = true;
+
+
+    /*
+      CRITICAL:
+
+      Audio is the FIRST action
+      performed by the gesture.
+
+      Do NOT wait.
+      Do NOT use setTimeout.
+      Do NOT load Canva first.
+    */
+
+    playSongFromGesture();
 
 
     /*
@@ -918,38 +828,15 @@
 
 
   /* =========================
-     DESKTOP CLICK
-  ========================= */
+     POINTER DOWN
+     ========================= */
 
   tapArea.addEventListener(
-
-    "click",
-
-    openInvitation
-
-  );
-
-
-  /* =========================
-     MOBILE TOUCH
-  ========================= */
-
-  tapArea.addEventListener(
-
-    "touchend",
-
-    function(event) {
-
-      event.preventDefault();
-
-      openInvitation();
-
-    },
-
+    "pointerdown",
+    openInvitation,
     {
-      passive: false
+      passive: true
     }
-
   );
 
 
