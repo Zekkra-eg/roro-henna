@@ -381,25 +381,23 @@
 
 
     /* =========================
-       SPEAKER ICON
+       REALISTIC SPEAKER ICON
     ========================= */
 
     .speakerIcon {
 
       position: relative;
 
-      width: 22px;
+      width: 25px;
 
-      height: 22px;
+      height: 25px;
 
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
+      display: block;
 
     }
 
+
+    /* Speaker box */
 
     .speakerBody {
 
@@ -407,16 +405,20 @@
 
       left: 2px;
 
+      top: 9px;
+
       width: 7px;
 
-      height: 9px;
+      height: 8px;
 
       background: white;
 
-      border-radius: 2px;
+      border-radius: 1.5px;
 
     }
 
+
+    /* Speaker cone */
 
     .speakerCone {
 
@@ -424,58 +426,73 @@
 
       left: 7px;
 
+      top: 5px;
+
       width: 0;
+
       height: 0;
 
-      border-top: 7px solid transparent;
+      border-top: 8px solid transparent;
 
-      border-bottom: 7px solid transparent;
+      border-bottom: 8px solid transparent;
 
-      border-right: 10px solid white;
+      border-right: 12px solid white;
 
       transform: rotate(180deg);
 
     }
 
 
-    .soundWave1,
-    .soundWave2 {
+    /* Small sound wave */
+
+    .soundWave1 {
 
       position: absolute;
 
-      border: 2px solid white;
+      top: 6px;
 
-      border-left: 0;
-
-      border-top: 0;
-
-      border-bottom: 0;
-
-      border-radius: 50%;
-
-      transform: rotate(0deg);
-
-    }
-
-
-    .soundWave1 {
+      right: 4px;
 
       width: 8px;
 
       height: 13px;
 
-      right: 1px;
+      border: 2px solid white;
+
+      border-left: 0;
+
+      border-top-color: transparent;
+
+      border-bottom-color: transparent;
+
+      border-radius: 0 50% 50% 0;
 
     }
 
 
+    /* Large sound wave */
+
     .soundWave2 {
+
+      position: absolute;
+
+      top: 3px;
+
+      right: 0;
 
       width: 13px;
 
       height: 19px;
 
-      right: -2px;
+      border: 2px solid white;
+
+      border-left: 0;
+
+      border-top-color: transparent;
+
+      border-bottom-color: transparent;
+
+      border-radius: 0 50% 50% 0;
 
     }
 
@@ -620,7 +637,7 @@
 
   <audio
     id="bg-music"
-    src="song2.mp3"
+    src="songgg.mp3"
     loop
     preload="auto"
   ></audio>
@@ -698,7 +715,7 @@
 
   /* =========================
      ELEMENTS
-  ========================= */
+     ========================= */
 
   const video1 =
     document.getElementById("video1");
@@ -734,7 +751,7 @@
 
   /* =========================
      CANVA URL
-  ========================= */
+     ========================= */
 
   const CANVA_URL =
     "https://www.canva.com/design/DAHWsDYPq3k/BJt-oUK1cNMC3uRSdF-f0w/view?embed";
@@ -742,7 +759,7 @@
 
   /* =========================
      VIDEO 1
-  ========================= */
+     ========================= */
 
   video1.play().catch(error => {
 
@@ -756,7 +773,7 @@
 
   /* =========================
      VIDEO 1 ENDED
-  ========================= */
+     ========================= */
 
   video1.addEventListener(
     "ended",
@@ -766,7 +783,7 @@
 
   /* =========================
      START VIDEO 2
-  ========================= */
+     ========================= */
 
   function startVideo2() {
 
@@ -1103,19 +1120,9 @@
       }
 
 
-      /*
-        User directly clicked
-        the invitation.
-      */
-
       const started =
         await startMusic();
 
-
-      /*
-        If Safari accepted
-        the audio, open Canva.
-      */
 
       if (started) {
 
@@ -1131,10 +1138,6 @@
 
       }
 
-
-      /*
-        Safari rejected audio.
-      */
 
       soundMessage.classList.add(
         "show"
