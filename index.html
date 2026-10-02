@@ -12,7 +12,12 @@
 
   <title>Invitation</title>
 
+
   <style>
+
+    /* =========================
+       RESET
+    ========================= */
 
     * {
       margin: 0;
@@ -20,73 +25,146 @@
       box-sizing: border-box;
     }
 
+
+    /* =========================
+       PAGE
+    ========================= */
+
     html,
     body {
+
       width: 100%;
       height: 100%;
+
       margin: 0;
       padding: 0;
+
       overflow: hidden;
+
       background: transparent;
+
     }
+
+
+    /* =========================
+       CONTAINER
+    ========================= */
 
     .container {
+
       position: relative;
+
       width: 100%;
       height: 100vh;
+
       overflow: hidden;
+
       background: transparent;
+
     }
+
+
+    /* =========================
+       VIDEOS
+    ========================= */
 
     video {
+
       position: absolute;
+
       inset: 0;
+
       width: 100%;
       height: 100%;
+
       object-fit: cover;
+
       display: block;
+
     }
+
 
     #video1 {
+
       z-index: 1;
+
     }
+
 
     #video2 {
+
       z-index: 2;
+
       opacity: 0;
-      transition: opacity 0.15s ease;
+
+      transition:
+        opacity 0.15s ease;
+
       pointer-events: none;
+
     }
+
 
     #video2.show {
+
       opacity: 1;
+
       pointer-events: auto;
+
     }
 
-    #song {
+
+    /* =========================
+       AUDIO
+    ========================= */
+
+    #bg-music {
+
       position: absolute;
+
       width: 1px;
       height: 1px;
+
       opacity: 0;
+
       pointer-events: none;
+
     }
+
+
+    /* =========================
+       CONFETTI
+    ========================= */
 
     #confetti {
+
       position: absolute;
+
       inset: 0;
+
       z-index: 10;
+
       pointer-events: none;
+
       overflow: hidden;
+
       background: transparent;
+
     }
 
+
     .piece {
+
       position: absolute;
+
       left: 50%;
       top: 50%;
+
       width: 8px;
       height: 15px;
+
       opacity: 0;
+
       border-radius: 2px;
 
       animation:
@@ -94,11 +172,14 @@
         2.8s
         cubic-bezier(.15, .7, .3, 1)
         forwards;
+
     }
+
 
     @keyframes confettiExplosion {
 
       0% {
+
         transform:
           translate(-50%, -50%)
           translate(0, 0)
@@ -106,13 +187,19 @@
           scale(0.4);
 
         opacity: 1;
+
       }
+
 
       15% {
+
         opacity: 1;
+
       }
 
+
       100% {
+
         transform:
           translate(-50%, -50%)
           translate(var(--x), var(--y))
@@ -120,11 +207,18 @@
           scale(1);
 
         opacity: 0;
+
       }
 
     }
 
+
+    /* =========================
+       TAP AREA
+    ========================= */
+
     #tapArea {
+
       position: absolute;
 
       z-index: 20;
@@ -146,13 +240,23 @@
       touch-action: manipulation;
 
       display: none;
+
     }
+
 
     #tapArea.active {
+
       display: block;
+
     }
 
+
+    /* =========================
+       CANVA
+    ========================= */
+
     #canvaContainer {
+
       position: fixed;
 
       inset: 0;
@@ -167,13 +271,19 @@
       display: none;
 
       overflow: hidden;
+
     }
+
 
     #canvaContainer.show {
+
       display: block;
+
     }
 
+
     #canvaFrame {
+
       position: absolute;
 
       top: 0;
@@ -188,6 +298,7 @@
       margin: 0;
 
       display: block;
+
     }
 
   </style>
@@ -197,10 +308,13 @@
 
 <body>
 
+
 <div class="container">
 
 
-  <!-- VIDEO 1 -->
+  <!-- =========================
+       VIDEO 1
+  ========================= -->
 
   <video
     id="video1"
@@ -219,7 +333,9 @@
   </video>
 
 
-  <!-- VIDEO 2 -->
+  <!-- =========================
+       VIDEO 2
+  ========================= -->
 
   <video
     id="video2"
@@ -238,32 +354,35 @@
   </video>
 
 
-  <!-- AUDIO -->
+  <!-- =========================
+       AUDIO
+  ========================= -->
 
   <audio
-    id="song"
+    id="bg-music"
+    src="song.mp3"
+    loop
     preload="auto"
-  >
-
-    <source
-      src="song.mp3"
-      type="audio/mpeg"
-    >
-
-  </audio>
+  ></audio>
 
 
-  <!-- CONFETTI -->
+  <!-- =========================
+       CONFETTI
+  ========================= -->
 
   <div id="confetti"></div>
 
 
-  <!-- TAP AREA -->
+  <!-- =========================
+       TAP AREA
+  ========================= -->
 
   <div id="tapArea"></div>
 
 
-  <!-- CANVA -->
+  <!-- =========================
+       CANVA
+  ========================= -->
 
   <div id="canvaContainer">
 
@@ -282,6 +401,7 @@
 
 <script>
 
+
   /* =========================
      ELEMENTS
   ========================= */
@@ -289,23 +409,33 @@
   const video1 =
     document.getElementById("video1");
 
+
   const video2 =
     document.getElementById("video2");
 
-  const song =
-    document.getElementById("song");
+
+  const audio =
+    document.getElementById("bg-music");
+
 
   const confetti =
     document.getElementById("confetti");
 
+
   const tapArea =
     document.getElementById("tapArea");
 
+
   const canvaContainer =
-    document.getElementById("canvaContainer");
+    document.getElementById(
+      "canvaContainer"
+    );
+
 
   const canvaFrame =
-    document.getElementById("canvaFrame");
+    document.getElementById(
+      "canvaFrame"
+    );
 
 
   /* =========================
@@ -348,6 +478,7 @@
 
     video2.currentTime = 0;
 
+
     video2.play().catch(error => {
 
       console.log(
@@ -357,17 +488,23 @@
 
     });
 
-    video2.classList.add("show");
+
+    video2.classList.add(
+      "show"
+    );
 
 
     setTimeout(() => {
 
-      video1.style.display = "none";
+      video1.style.display =
+        "none";
 
     }, 200);
 
 
-    tapArea.classList.add("active");
+    tapArea.classList.add(
+      "active"
+    );
 
 
     createConfetti();
@@ -407,8 +544,11 @@
       i++
     ) {
 
+
       const piece =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
 
       piece.className =
@@ -503,56 +643,40 @@
 
 
   /* =========================
-     PLAY SONG
-  ========================= */
+     PLAY MUSIC
+     ========================= */
 
-  function playSongFromGesture() {
+  function playMusic() {
 
     /*
-      IMPORTANT:
-      We do NOT use song.load().
-      Safari should receive play()
-      directly from the user's tap.
+      Same method as your
+      working Safari example.
+
+      No load()
+      No timeout
+      No pointerdown
     */
 
-    song.volume = 1;
-    song.muted = false;
+    audio.volume = 1;
 
-    const playPromise =
-      song.play();
+    audio.play().catch(err => {
 
+      console.warn(
+        "Audio:",
+        err
+      );
 
-    if (
-      playPromise !== undefined
-    ) {
-
-      playPromise
-        .then(() => {
-
-          console.log(
-            "Song started successfully"
-          );
-
-        })
-        .catch(error => {
-
-          console.log(
-            "Audio playback failed:",
-            error
-          );
-
-        });
-
-    }
+    });
 
   }
 
 
   /* =========================
      SHOW CANVA
-  ========================= */
+     ========================= */
 
   function showCanva() {
+
 
     /*
       Stop Video 2
@@ -611,65 +735,54 @@
   let opened = false;
 
 
-  function openInvitation(event) {
-
-    if (opened) {
-      return;
-    }
-
-
-    if (
-      !video2.classList.contains(
-        "show"
-      )
-    ) {
-
-      return;
-
-    }
-
-
-    opened = true;
-
-
-    /*
-      IMPORTANT:
-      The audio is played
-      directly from the tap.
-    */
-
-    playSongFromGesture();
-
-
-    /*
-      Then open Canva.
-    */
-
-    showCanva();
-
-  }
-
-
-  /* =========================
-     SAFARI TOUCH
-  ========================= */
-
-  tapArea.addEventListener(
-    "touchend",
-    openInvitation,
-    {
-      passive: true
-    }
-  );
-
-
-  /* =========================
-     DESKTOP CLICK
-  ========================= */
-
   tapArea.addEventListener(
     "click",
-    openInvitation
+    () => {
+
+
+      if (opened) {
+
+        return;
+
+      }
+
+
+      if (
+        !video2.classList.contains(
+          "show"
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      opened = true;
+
+
+      /*
+        IMPORTANT:
+
+        This is the FIRST action
+        inside the real click.
+
+        Safari receives the
+        audio play directly
+        from the user's gesture.
+      */
+
+      playMusic();
+
+
+      /*
+        Then open Canva.
+      */
+
+      showCanva();
+
+
+    }
   );
 
 
