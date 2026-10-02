@@ -9,47 +9,48 @@
 
   <style>
 
-    /* =========================
-       RESET
-    ========================= */
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
-
-    /* =========================
-       PAGE
-    ========================= */
-
     html,
     body {
       width: 100%;
       height: 100%;
       overflow: hidden;
-
-      /* Transparent instead of black */
-      background: transparent;
+      background: white;
     }
-
-
-    /* =========================
-       CONTAINER
-    ========================= */
 
     .container {
       position: relative;
-
       width: 100%;
       height: 100vh;
-
       overflow: hidden;
-
-      background: transparent;
+      background: #000;
+      cursor: pointer;
     }
 
+    #canvaFrame {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      z-index: 30;
+      display: none;
+      background: #fff;
+    }
+
+    #songPlayer {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      z-index: 40;
+      width: 180px;
+      opacity: 0.9;
+    }
 
     /* =========================
        VIDEOS
@@ -57,50 +58,29 @@
 
     video {
       position: absolute;
-
       inset: 0;
 
       width: 100%;
       height: 100%;
 
-      /*
-        Keeps the video filling
-        the entire screen
-      */
       object-fit: cover;
-
-      display: block;
     }
 
-
-    /* =========================
-       VIDEO 1
-    ========================= */
 
     #video1 {
-      z-index: 1;
+      z-index: 2;
     }
 
 
-    /* =========================
-       VIDEO 2
-    ========================= */
-
     #video2 {
-      z-index: 2;
+      z-index: 1;
 
       opacity: 0;
-
-      transition: opacity 0.15s ease;
-
-      pointer-events: none;
     }
 
 
     #video2.show {
       opacity: 1;
-
-      pointer-events: auto;
     }
 
 
@@ -110,7 +90,6 @@
 
     #confetti {
       position: absolute;
-
       inset: 0;
 
       z-index: 10;
@@ -118,14 +97,8 @@
       pointer-events: none;
 
       overflow: hidden;
-
-      background: transparent;
     }
 
-
-    /* =========================
-       CONFETTI PIECES
-    ========================= */
 
     .piece {
       position: absolute;
@@ -133,51 +106,33 @@
       left: 50%;
       top: 50%;
 
-      width: 8px;
-      height: 15px;
+      width: 9px;
+      height: 16px;
 
-      opacity: 0;
+      opacity: 1;
 
-      border-radius: 2px;
-
-      animation:
-        confettiExplosion
-        2.8s
-        cubic-bezier(.15, .7, .3, 1)
-        forwards;
+      animation: explode 2.5s ease-out forwards;
     }
 
 
-    /* =========================
-       CONFETTI ANIMATION
-    ========================= */
-
-    @keyframes confettiExplosion {
+    @keyframes explode {
 
       0% {
 
         transform:
           translate(-50%, -50%)
           translate(0, 0)
-          rotate(0deg)
-          scale(0.4);
+          rotate(0deg);
 
         opacity: 1;
       }
-
-
-      15% {
-        opacity: 1;
-      }
-
 
       100% {
 
         transform:
           translate(-50%, -50%)
           translate(var(--x), var(--y))
-          rotate(var(--rotation))
-          scale(1);
+          rotate(var(--rotate));
 
         opacity: 0;
       }
@@ -186,53 +141,50 @@
 
 
     /* =========================
-       INVISIBLE TAP AREA
-       VIDEO 2 ONLY
+       BUTTON
     ========================= */
 
-    #tapArea {
+    #continueButton {
 
       position: absolute;
 
       z-index: 20;
 
-      /*
-        Large invisible area
-        in the center
-      */
+      left: 50%;
+      bottom: 8%;
 
-      width: 70%;
-      height: 45%;
+      transform: translateX(-50%);
 
-      left: 15%;
-      top: 27.5%;
+      padding: 14px 35px;
+
+      border: none;
+      border-radius: 40px;
+
+      background: white;
+
+      color: #333;
+
+      font-size: 16px;
 
       cursor: pointer;
 
-      background: transparent;
+      opacity: 0;
 
-      -webkit-tap-highlight-color: transparent;
+      pointer-events: none;
 
-      user-select: none;
+      transition: 0.5s ease;
 
-      /*
-        Hidden while Video 1
-        is playing
-      */
-
-      display: none;
+      box-shadow:
+        0 5px 20px rgba(0,0,0,0.2);
     }
 
 
-    /*
-      Activated only when
-      Video 2 starts
-    */
+    #continueButton.show {
 
-    #tapArea.active {
-      display: block;
+      opacity: 1;
+
+      pointer-events: auto;
     }
-
 
   </style>
 
@@ -242,12 +194,22 @@
 <body>
 
 
-<div class="container">
+<div class="container" id="container">
+
+  <iframe
+    id="canvaFrame"
+    title="Henna Canva Invite"
+    src=""
+    allowfullscreen
+    allow="fullscreen"
+  ></iframe>
+
+  <audio id="songPlayer" controls loop preload="auto">
+    <source src="./song.mp3" type="audio/mpeg">
+  </audio>
 
 
-  <!-- =========================
-       VIDEO 1
-  ========================= -->
+  <!-- VIDEO 1 -->
 
   <video
     id="video1"
@@ -258,16 +220,14 @@
   >
 
     <source
-      src="5.mp4"
+      src="./Intros/5.mp4"
       type="video/mp4"
     >
 
   </video>
 
 
-  <!-- =========================
-       VIDEO 2
-  ========================= -->
+  <!-- VIDEO 2 -->
 
   <video
     id="video2"
@@ -278,26 +238,23 @@
   >
 
     <source
-      src="6.mp4"
+      src="./Intros/6.mp4"
       type="video/mp4"
     >
 
   </video>
 
 
-  <!-- =========================
-       CONFETTI
-    ========================= -->
+  <!-- CONFETTI -->
 
   <div id="confetti"></div>
 
 
-  <!-- =========================
-       INVISIBLE TAP AREA
-       ONLY VIDEO 2
-  ========================= -->
+  <!-- BUTTON -->
 
-  <div id="tapArea"></div>
+  <button id="continueButton">
+    Continue
+  </button>
 
 
 </div>
@@ -306,10 +263,6 @@
 
 <script>
 
-
-  /* =========================
-     ELEMENTS
-  ========================= */
 
   const video1 =
     document.getElementById("video1");
@@ -323,19 +276,51 @@
     document.getElementById("confetti");
 
 
-  const tapArea =
-    document.getElementById("tapArea");
+  const button =
+    document.getElementById("continueButton");
+
+  const container =
+    document.getElementById("container");
+
+  const canvaFrame =
+    document.getElementById("canvaFrame");
+
+  const songPlayer =
+    document.getElementById("songPlayer");
+
+  let musicStarted = false;
+
+
+  function startMusicAndOpenCanva() {
+    if(!musicStarted){
+      musicStarted = true;
+      songPlayer.volume = 0.7;
+      songPlayer.play().catch(() => {
+        console.log("Song autoplay blocked until user interaction.");
+      });
+    }
+
+    window.open(
+      "https://zekra.link/roro-henna",
+      "_blank",
+      "noopener,noreferrer"
+    );
+
+    video1.pause();
+    video2.pause();
+    button.classList.remove("show");
+  }
 
 
 
-  /* =========================
+  /* =================================
      START VIDEO 1
-  ========================= */
+  ================================= */
 
   video1.play().catch(error => {
 
     console.log(
-      "Video 1 autoplay:",
+      "Video 1 autoplay blocked:",
       error
     );
 
@@ -343,9 +328,9 @@
 
 
 
-  /* =========================
-     VIDEO 1 FINISHED
-  ========================= */
+  /* =================================
+     WHEN VIDEO 1 FINISHES
+  ================================= */
 
   video1.addEventListener(
     "ended",
@@ -358,13 +343,37 @@
 
 
     console.log(
-      "Video 1 finished"
+      "VIDEO 1 FINISHED"
     );
 
 
-    /* -------------------------
-       Start Video 2
-    ------------------------- */
+    /*
+
+      Make sure video 1
+      disappears
+
+    */
+
+    video1.style.display =
+      "none";
+
+
+    /*
+
+      Show video 2
+
+    */
+
+    video2.classList.add(
+      "show"
+    );
+
+
+    /*
+
+      Start video 2
+
+    */
 
     video2.currentTime = 0;
 
@@ -372,59 +381,46 @@
     video2.play().catch(error => {
 
       console.log(
-        "Video 2 play error:",
+        "Video 2 error:",
         error
       );
 
     });
 
 
-    /* -------------------------
-       Show Video 2
-    ------------------------- */
+    /*
 
-    video2.classList.add(
-      "show"
-    );
+      Celebration
+
+    */
+
+    createConfetti();
 
 
-    /* -------------------------
-       Hide Video 1
-    ------------------------- */
+    /*
+
+      Show button
+
+    */
 
     setTimeout(() => {
 
-      video1.style.display =
-        "none";
+      button.classList.add(
+        "show"
+      );
 
-    }, 200);
-
-
-    /* -------------------------
-       Activate tap area
-       ONLY FOR VIDEO 2
-    ------------------------- */
-
-    tapArea.classList.add(
-      "active"
-    );
-
-
-    /* -------------------------
-       Start Confetti
-    ------------------------- */
-
-    createConfetti();
+    }, 700);
 
   }
 
 
 
-  /* =========================
-     CREATE CONFETTI
-  ========================= */
+  /* =================================
+     CONFETTI
+  ================================= */
 
   function createConfetti() {
+
 
     confetti.innerHTML = "";
 
@@ -443,12 +439,9 @@
     ];
 
 
-    const pieces = 120;
-
-
     for (
       let i = 0;
-      i < pieces;
+      i < 120;
       i++
     ) {
 
@@ -463,9 +456,11 @@
         "piece";
 
 
-      /* -------------------------
-         Random Direction
-      ------------------------- */
+      /*
+
+        Random direction
+
+      */
 
       const angle =
         Math.random()
@@ -473,13 +468,9 @@
         * 2;
 
 
-      /* -------------------------
-         Random Distance
-      ------------------------- */
-
       const distance =
         300 +
-        Math.random() * 650;
+        Math.random() * 700;
 
 
       const x =
@@ -491,10 +482,6 @@
         Math.sin(angle)
         * distance;
 
-
-      /* -------------------------
-         CSS Variables
-      ------------------------- */
 
       piece.style.setProperty(
         "--x",
@@ -508,22 +495,17 @@
       );
 
 
-      /* -------------------------
-         Random Rotation
-      ------------------------- */
-
       piece.style.setProperty(
-        "--rotation",
-        (
-          Math.random() * 1200
-          - 600
-        ) + "deg"
+        "--rotate",
+        (Math.random() * 1000) + "deg"
       );
 
 
-      /* -------------------------
-         Random Color
-      ------------------------- */
+      /*
+
+        Random color
+
+      */
 
       piece.style.background =
         colors[
@@ -534,37 +516,32 @@
         ];
 
 
-      /* -------------------------
-         Random Size
-      ------------------------- */
+      /*
+
+        Random size
+
+      */
 
       piece.style.width =
-        (
-          5 +
-          Math.random() * 8
-        ) + "px";
+        (5 + Math.random() * 8)
+        + "px";
 
 
       piece.style.height =
-        (
-          8 +
-          Math.random() * 16
-        ) + "px";
+        (8 + Math.random() * 15)
+        + "px";
 
 
-      /* -------------------------
-         Random Delay
-      ------------------------- */
+      /*
+
+        Random delay
+
+      */
 
       piece.style.animationDelay =
-        (
-          Math.random() * 0.12
-        ) + "s";
+        (Math.random() * 0.15)
+        + "s";
 
-
-      /* -------------------------
-         Add Piece
-      ------------------------- */
 
       confetti.appendChild(
         piece
@@ -572,10 +549,6 @@
 
     }
 
-
-    /* -------------------------
-       Remove Confetti
-    ------------------------- */
 
     setTimeout(() => {
 
@@ -587,57 +560,28 @@
 
 
 
-  /* =========================
-     REDIRECT
-     VIDEO 2 ONLY
-  ========================= */
+  /* =================================
+     BUTTON
+  ================================= */
 
-  function redirectToCanva() {
-
-    /*
-      Make sure Video 2
-      is currently active
-    */
-
-    if (
-      video2.classList.contains("show")
-    ) {
-
-      window.location.href =
-        "https://zekra.link/roro-henna";
-
-    }
-
-  }
-
-
-
-  /* =========================
-     DESKTOP CLICK
-  ========================= */
-
-  tapArea.addEventListener(
+  button.addEventListener(
     "click",
-    redirectToCanva
+    function() {
+      startMusicAndOpenCanva();
+    }
   );
 
-
-
-  /* =========================
-     MOBILE TOUCH
-  ========================= */
-
-  tapArea.addEventListener(
-    "touchend",
+  container.addEventListener(
+    "click",
     function(event) {
+      if(
+        event.target === button ||
+        event.target.closest("button")
+      ){
+        return;
+      }
 
-      event.preventDefault();
-
-      redirectToCanva();
-
-    },
-    {
-      passive: false
+      startMusicAndOpenCanva();
     }
   );
 
