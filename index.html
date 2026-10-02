@@ -295,6 +295,223 @@
 
 
     /* =========================
+       SOUND BUTTON
+    ========================= */
+
+    #soundButton {
+
+      position: fixed;
+
+      z-index: 250;
+
+      right: 22px;
+
+      bottom: 22px;
+
+      width: 46px;
+
+      height: 46px;
+
+      border-radius: 50%;
+
+      border: 1px solid rgba(255,255,255,0.35);
+
+      background: rgba(0,0,0,0.18);
+
+      backdrop-filter: blur(4px);
+
+      -webkit-backdrop-filter: blur(4px);
+
+      display: none;
+
+      align-items: center;
+
+      justify-content: center;
+
+      cursor: pointer;
+
+      padding: 0;
+
+      outline: none;
+
+      -webkit-tap-highlight-color: transparent;
+
+      box-shadow:
+        0 4px 18px rgba(0,0,0,0.15);
+
+      animation:
+        soundButtonFloat
+        2.2s
+        ease-in-out
+        infinite;
+
+    }
+
+
+    #soundButton.show {
+
+      display: flex;
+
+    }
+
+
+    #soundButton:active {
+
+      transform: scale(0.88);
+
+    }
+
+
+    @keyframes soundButtonFloat {
+
+      0%,
+      100% {
+
+        transform: scale(1);
+
+      }
+
+      50% {
+
+        transform: scale(1.07);
+
+      }
+
+    }
+
+
+    /* =========================
+       SPEAKER ICON
+    ========================= */
+
+    .speakerIcon {
+
+      position: relative;
+
+      width: 22px;
+
+      height: 22px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: center;
+
+    }
+
+
+    .speakerBody {
+
+      position: absolute;
+
+      left: 2px;
+
+      width: 7px;
+
+      height: 9px;
+
+      background: white;
+
+      border-radius: 2px;
+
+    }
+
+
+    .speakerCone {
+
+      position: absolute;
+
+      left: 7px;
+
+      width: 0;
+      height: 0;
+
+      border-top: 7px solid transparent;
+
+      border-bottom: 7px solid transparent;
+
+      border-right: 10px solid white;
+
+      transform: rotate(180deg);
+
+    }
+
+
+    .soundWave1,
+    .soundWave2 {
+
+      position: absolute;
+
+      border: 2px solid white;
+
+      border-left: 0;
+
+      border-top: 0;
+
+      border-bottom: 0;
+
+      border-radius: 50%;
+
+      transform: rotate(0deg);
+
+    }
+
+
+    .soundWave1 {
+
+      width: 8px;
+
+      height: 13px;
+
+      right: 1px;
+
+    }
+
+
+    .soundWave2 {
+
+      width: 13px;
+
+      height: 19px;
+
+      right: -2px;
+
+    }
+
+
+    /* =========================
+       MUTED STATE
+    ========================= */
+
+    #soundButton.muted .soundWave1,
+    #soundButton.muted .soundWave2 {
+
+      display: none;
+
+    }
+
+
+    #soundButton.muted::after {
+
+      content: "";
+
+      position: absolute;
+
+      width: 25px;
+
+      height: 2px;
+
+      background: white;
+
+      border-radius: 2px;
+
+      transform: rotate(-45deg);
+
+    }
+
+
+    /* =========================
        CANVA
     ========================= */
 
@@ -433,6 +650,31 @@
 
 
   <!-- =========================
+       SOUND BUTTON
+  ========================= -->
+
+  <button
+    id="soundButton"
+    aria-label="Toggle music"
+    type="button"
+  >
+
+    <span class="speakerIcon">
+
+      <span class="speakerBody"></span>
+
+      <span class="speakerCone"></span>
+
+      <span class="soundWave1"></span>
+
+      <span class="soundWave2"></span>
+
+    </span>
+
+  </button>
+
+
+  <!-- =========================
        CANVA
   ========================= -->
 
@@ -475,6 +717,9 @@
 
   const soundMessage =
     document.getElementById("soundMessage");
+
+  const soundButton =
+    document.getElementById("soundButton");
 
   const canvaContainer =
     document.getElementById(
@@ -563,7 +808,7 @@
 
   /* =========================
      CONFETTI
-  ========================= */
+     ========================= */
 
   function createConfetti() {
 
@@ -706,13 +951,6 @@
     }
 
 
-    /*
-      IMPORTANT:
-
-      This function is called directly
-      from the user's click.
-    */
-
     audio.volume = 1;
 
     audio.muted = false;
@@ -724,9 +962,21 @@
 
       audioStarted = true;
 
+
+      soundButton.classList.add(
+        "show"
+      );
+
+
+      soundButton.classList.remove(
+        "muted"
+      );
+
+
       console.log(
         "HTML AUDIO STARTED"
       );
+
 
       return true;
 
@@ -744,6 +994,56 @@
     }
 
   }
+
+
+  /* =====================================================
+     PLAY / PAUSE BUTTON
+     ===================================================== */
+
+  soundButton.addEventListener(
+    "click",
+    async function (event) {
+
+      event.stopPropagation();
+
+
+      if (
+        audio.paused
+      ) {
+
+        try {
+
+          await audio.play();
+
+          soundButton.classList.remove(
+            "muted"
+          );
+
+        }
+
+        catch (error) {
+
+          console.warn(
+            "Audio play failed:",
+            error
+          );
+
+        }
+
+      }
+
+      else {
+
+        audio.pause();
+
+        soundButton.classList.add(
+          "muted"
+        );
+
+      }
+
+    }
+  );
 
 
   /* =====================================================
@@ -804,12 +1104,8 @@
 
 
       /*
-        VERY IMPORTANT:
-
-        Nothing happens before this.
-
-        The user click directly calls
-        audio.play().
+        User directly clicked
+        the invitation.
       */
 
       const started =
@@ -817,8 +1113,8 @@
 
 
       /*
-        If Safari accepted the audio,
-        THEN open Canva.
+        If Safari accepted
+        the audio, open Canva.
       */
 
       if (started) {
@@ -837,11 +1133,7 @@
 
 
       /*
-        Safari rejected the audio.
-
-        Do NOT open Canva yet.
-
-        Ask for another direct tap.
+        Safari rejected audio.
       */
 
       soundMessage.classList.add(
@@ -852,6 +1144,34 @@
     },
     {
       passive: true
+    }
+  );
+
+
+  /* =====================================================
+     KEEP BUTTON IN SYNC
+     ===================================================== */
+
+  audio.addEventListener(
+    "play",
+    function () {
+
+      soundButton.classList.remove(
+        "muted"
+      );
+
+    }
+  );
+
+
+  audio.addEventListener(
+    "pause",
+    function () {
+
+      soundButton.classList.add(
+        "muted"
+      );
+
     }
   );
 
