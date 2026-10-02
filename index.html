@@ -308,13 +308,21 @@
 
       bottom: 22px;
 
-      width: 46px;
+      min-width: 70px;
 
-      height: 46px;
+      height: 38px;
 
-      border: none;
+      padding: 0 15px;
 
-      background: transparent;
+      border-radius: 20px;
+
+      border: 1px solid rgba(255,255,255,0.4);
+
+      background: rgba(0,0,0,0.18);
+
+      backdrop-filter: blur(4px);
+
+      -webkit-backdrop-filter: blur(4px);
 
       display: none;
 
@@ -324,11 +332,24 @@
 
       cursor: pointer;
 
-      padding: 0;
-
       outline: none;
 
       -webkit-tap-highlight-color: transparent;
+
+      box-shadow:
+        0 4px 18px rgba(0,0,0,0.15);
+
+      color: white;
+
+      font-family: Arial, sans-serif;
+
+      font-size: 11px;
+
+      font-weight: 500;
+
+      letter-spacing: 1.5px;
+
+      line-height: 1;
 
       animation:
         soundButtonFloat
@@ -364,28 +385,9 @@
 
       50% {
 
-        transform: scale(1.07);
+        transform: scale(1.05);
 
       }
-
-    }
-
-
-    /* =========================
-       SOUND ICON IMAGE
-    ========================= */
-
-    #soundButton img {
-
-      width: 100%;
-
-      height: 100%;
-
-      object-fit: contain;
-
-      display: block;
-
-      pointer-events: none;
 
     }
 
@@ -530,8 +532,7 @@
 
   <!-- =========================
        SOUND BUTTON
-       ON = on.png
-       OFF = off.png
+       PLAY / MUTE
   ========================= -->
 
   <button
@@ -539,13 +540,9 @@
     aria-label="Toggle music"
     type="button"
   >
-
-    <img
-      id="soundIcon"
-      src="on.png"
-      alt=""
-    >
-
+    <span id="soundButtonText">
+      MUTE
+    </span>
   </button>
 
 
@@ -596,8 +593,10 @@
   const soundButton =
     document.getElementById("soundButton");
 
-  const soundIcon =
-    document.getElementById("soundIcon");
+  const soundButtonText =
+    document.getElementById(
+      "soundButtonText"
+    );
 
   const canvaContainer =
     document.getElementById(
@@ -608,17 +607,6 @@
     document.getElementById(
       "canvaFrame"
     );
-
-
-  /* =========================
-     SOUND ICONS
-     ========================= */
-
-  const SOUND_ON =
-    "on.png";
-
-  const SOUND_OFF =
-    "off.png";
 
 
   /* =========================
@@ -857,8 +845,8 @@
       );
 
 
-      soundIcon.src =
-        SOUND_ON;
+      soundButtonText.textContent =
+        "MUTE";
 
 
       console.log(
@@ -885,7 +873,7 @@
 
 
   /* =====================================================
-     PLAY / PAUSE BUTTON
+     PLAY / MUTE BUTTON
      ===================================================== */
 
   soundButton.addEventListener(
@@ -903,8 +891,8 @@
 
           await audio.play();
 
-          soundIcon.src =
-            SOUND_ON;
+          soundButtonText.textContent =
+            "MUTE";
 
         }
 
@@ -923,8 +911,8 @@
 
         audio.pause();
 
-        soundIcon.src =
-          SOUND_OFF;
+        soundButtonText.textContent =
+          "PLAY";
 
       }
 
@@ -1021,15 +1009,15 @@
 
 
   /* =====================================================
-     KEEP ICON IN SYNC
+     KEEP BUTTON IN SYNC
      ===================================================== */
 
   audio.addEventListener(
     "play",
     function () {
 
-      soundIcon.src =
-        SOUND_ON;
+      soundButtonText.textContent =
+        "MUTE";
 
     }
   );
@@ -1039,8 +1027,8 @@
     "pause",
     function () {
 
-      soundIcon.src =
-        SOUND_OFF;
+      soundButtonText.textContent =
+        "PLAY";
 
     }
   );
