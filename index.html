@@ -2,12 +2,22 @@
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Invitation</title>
 
+
   <style>
+
+    /* =========================
+       RESET
+    ========================= */
 
     * {
       margin: 0;
@@ -15,72 +25,108 @@
       box-sizing: border-box;
     }
 
+
+    /* =========================
+       PAGE
+    ========================= */
+
     html,
     body {
+
       width: 100%;
       height: 100%;
+
       overflow: hidden;
-      background: white;
+
+      background: transparent;
+
     }
+
+
+    /* =========================
+       MAIN CONTAINER
+    ========================= */
 
     .container {
+
       position: relative;
+
       width: 100%;
       height: 100vh;
+
       overflow: hidden;
-      background: #000;
-      cursor: pointer;
+
+      background: transparent;
+
     }
 
-    #canvaFrame {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      z-index: 30;
-      display: none;
-      background: #fff;
-    }
-
-    #songPlayer {
-      position: absolute;
-      left: 12px;
-      bottom: 12px;
-      z-index: 40;
-      width: 180px;
-      opacity: 0.9;
-    }
 
     /* =========================
        VIDEOS
     ========================= */
 
     video {
+
       position: absolute;
+
       inset: 0;
 
       width: 100%;
       height: 100%;
 
       object-fit: cover;
+
+      display: block;
+
     }
 
+
+    /* =========================
+       VIDEO 1
+    ========================= */
 
     #video1 {
-      z-index: 2;
+
+      z-index: 1;
+
     }
 
 
+    /* =========================
+       VIDEO 2
+    ========================= */
+
     #video2 {
-      z-index: 1;
+
+      z-index: 2;
 
       opacity: 0;
+
+      transition:
+        opacity 0.15s ease;
+
+      pointer-events: none;
+
     }
 
 
     #video2.show {
+
       opacity: 1;
+
+      pointer-events: auto;
+
+    }
+
+
+    /* =========================
+       AUDIO
+    ========================= */
+
+    #song {
+
+      display: none;
+
     }
 
 
@@ -89,7 +135,9 @@
     ========================= */
 
     #confetti {
+
       position: absolute;
+
       inset: 0;
 
       z-index: 10;
@@ -97,94 +145,182 @@
       pointer-events: none;
 
       overflow: hidden;
+
+      background: transparent;
+
     }
 
 
+    /* =========================
+       CONFETTI PIECES
+    ========================= */
+
     .piece {
+
       position: absolute;
 
       left: 50%;
       top: 50%;
 
-      width: 9px;
-      height: 16px;
+      width: 8px;
+      height: 15px;
 
-      opacity: 1;
+      opacity: 0;
 
-      animation: explode 2.5s ease-out forwards;
+      border-radius: 2px;
+
+      animation:
+
+        confettiExplosion
+
+        2.8s
+
+        cubic-bezier(.15, .7, .3, 1)
+
+        forwards;
+
     }
 
 
-    @keyframes explode {
+    /* =========================
+       CONFETTI ANIMATION
+    ========================= */
+
+    @keyframes confettiExplosion {
 
       0% {
 
         transform:
+
           translate(-50%, -50%)
+
           translate(0, 0)
-          rotate(0deg);
+
+          rotate(0deg)
+
+          scale(0.4);
 
         opacity: 1;
+
       }
+
+
+      15% {
+
+        opacity: 1;
+
+      }
+
 
       100% {
 
         transform:
+
           translate(-50%, -50%)
+
           translate(var(--x), var(--y))
-          rotate(var(--rotate));
+
+          rotate(var(--rotation))
+
+          scale(1);
 
         opacity: 0;
+
       }
 
     }
 
 
     /* =========================
-       BUTTON
+       INVISIBLE TAP AREA
     ========================= */
 
-    #continueButton {
+    #tapArea {
 
       position: absolute;
 
       z-index: 20;
 
-      left: 50%;
-      bottom: 8%;
+      width: 70%;
+      height: 45%;
 
-      transform: translateX(-50%);
-
-      padding: 14px 35px;
-
-      border: none;
-      border-radius: 40px;
-
-      background: white;
-
-      color: #333;
-
-      font-size: 16px;
+      left: 15%;
+      top: 27.5%;
 
       cursor: pointer;
 
-      opacity: 0;
+      background: transparent;
 
-      pointer-events: none;
+      -webkit-tap-highlight-color: transparent;
 
-      transition: 0.5s ease;
+      user-select: none;
 
-      box-shadow:
-        0 5px 20px rgba(0,0,0,0.2);
+      display: none;
+
     }
 
 
-    #continueButton.show {
+    #tapArea.active {
 
-      opacity: 1;
+      display: block;
 
-      pointer-events: auto;
     }
+
+
+    /* =========================
+       CANVA CONTAINER
+    ========================= */
+
+    #canvaContainer {
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 100;
+
+      width: 100vw;
+      height: 100vh;
+
+      background: white;
+
+      display: none;
+
+      overflow: hidden;
+
+    }
+
+
+    #canvaContainer.show {
+
+      display: block;
+
+    }
+
+
+    /* =========================
+       CANVA IFRAME
+    ========================= */
+
+    #canvaFrame {
+
+      position: absolute;
+
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      border: none;
+
+      padding: 0;
+      margin: 0;
+
+      display: block;
+
+    }
+
 
   </style>
 
@@ -194,22 +330,12 @@
 <body>
 
 
-<div class="container" id="container">
-
-  <iframe
-    id="canvaFrame"
-    title="Henna Canva Invite"
-    src=""
-    allowfullscreen
-    allow="fullscreen"
-  ></iframe>
-
-  <audio id="songPlayer" controls loop preload="auto">
-    <source src="./song.mp3" type="audio/mpeg">
-  </audio>
+<div class="container">
 
 
-  <!-- VIDEO 1 -->
+  <!-- =========================
+       VIDEO 1
+  ========================= -->
 
   <video
     id="video1"
@@ -220,14 +346,16 @@
   >
 
     <source
-      src="./Intros/5.mp4"
+      src="5.mp4"
       type="video/mp4"
     >
 
   </video>
 
 
-  <!-- VIDEO 2 -->
+  <!-- =========================
+       VIDEO 2
+  ========================= -->
 
   <video
     id="video2"
@@ -238,23 +366,62 @@
   >
 
     <source
-      src="./Intros/6.mp4"
+      src="6.mp4"
       type="video/mp4"
     >
 
   </video>
 
 
-  <!-- CONFETTI -->
+  <!-- =========================
+       AUDIO
+    ========================= -->
+
+  <audio
+    id="song"
+    preload="auto"
+  >
+
+    <source
+      src="song.mp3"
+      type="audio/mpeg"
+    >
+
+  </audio>
+
+
+  <!-- =========================
+       CONFETTI
+  ========================= -->
 
   <div id="confetti"></div>
 
 
-  <!-- BUTTON -->
+  <!-- =========================
+       INVISIBLE TAP AREA
+  ========================= -->
 
-  <button id="continueButton">
-    Continue
-  </button>
+  <div id="tapArea"></div>
+
+
+  <!-- =========================
+       CANVA EMBED
+  ========================= -->
+
+  <div id="canvaContainer">
+
+    <iframe
+      id="canvaFrame"
+
+      src=""
+
+      allowfullscreen
+
+      allow="fullscreen"
+
+    ></iframe>
+
+  </div>
 
 
 </div>
@@ -263,6 +430,10 @@
 
 <script>
 
+
+  /* =========================
+     ELEMENTS
+  ========================= */
 
   const video1 =
     document.getElementById("video1");
@@ -276,104 +447,73 @@
     document.getElementById("confetti");
 
 
-  const button =
-    document.getElementById("continueButton");
-
-  const container =
-    document.getElementById("container");
-
-  const canvaFrame =
-    document.getElementById("canvaFrame");
-
-  const songPlayer =
-    document.getElementById("songPlayer");
-
-  let musicStarted = false;
+  const tapArea =
+    document.getElementById("tapArea");
 
 
-  function startMusicAndOpenCanva() {
-    if(!musicStarted){
-      musicStarted = true;
-      songPlayer.volume = 0.7;
-      songPlayer.play().catch(() => {
-        console.log("Song autoplay blocked until user interaction.");
-      });
-    }
+  const song =
+    document.getElementById("song");
 
-    window.open(
-      "https://zekra.link/roro-henna",
-      "_blank",
-      "noopener,noreferrer"
+
+  const canvaContainer =
+    document.getElementById(
+      "canvaContainer"
     );
 
-    video1.pause();
-    video2.pause();
-    button.classList.remove("show");
-  }
+
+  const canvaFrame =
+    document.getElementById(
+      "canvaFrame"
+    );
 
 
+  /* =========================
+     CANVA URL
+  ========================= */
 
-  /* =================================
+  const CANVA_URL =
+
+    "https://www.canva.com/design/DAHWsDYPq3k/BJt-oUK1cNMC3uRSdF-f0w/view?embed";
+
+
+  /* =========================
      START VIDEO 1
-  ================================= */
+  ========================= */
 
   video1.play().catch(error => {
 
     console.log(
-      "Video 1 autoplay blocked:",
+      "Video 1 autoplay:",
       error
     );
 
   });
 
 
-
-  /* =================================
-     WHEN VIDEO 1 FINISHES
-  ================================= */
+  /* =========================
+     VIDEO 1 FINISHED
+  ========================= */
 
   video1.addEventListener(
-    "ended",
-    startVideo2
-  );
 
+    "ended",
+
+    startVideo2
+
+  );
 
 
   function startVideo2() {
 
 
     console.log(
-      "VIDEO 1 FINISHED"
+      "Video 1 finished"
     );
 
 
-    /*
-
-      Make sure video 1
-      disappears
-
-    */
-
-    video1.style.display =
-      "none";
-
-
-    /*
-
-      Show video 2
-
-    */
-
-    video2.classList.add(
-      "show"
-    );
-
-
-    /*
-
-      Start video 2
-
-    */
+    /* -------------------------
+       Start Video 2
+    ------------------------- */
 
     video2.currentTime = 0;
 
@@ -381,43 +521,55 @@
     video2.play().catch(error => {
 
       console.log(
-        "Video 2 error:",
+        "Video 2 play error:",
         error
       );
 
     });
 
 
-    /*
+    /* -------------------------
+       Show Video 2
+    ------------------------- */
 
-      Celebration
-
-    */
-
-    createConfetti();
+    video2.classList.add(
+      "show"
+    );
 
 
-    /*
-
-      Show button
-
-    */
+    /* -------------------------
+       Hide Video 1
+    ------------------------- */
 
     setTimeout(() => {
 
-      button.classList.add(
-        "show"
-      );
+      video1.style.display =
+        "none";
 
-    }, 700);
+    }, 200);
+
+
+    /* -------------------------
+       Activate Tap Area
+    ------------------------- */
+
+    tapArea.classList.add(
+      "active"
+    );
+
+
+    /* -------------------------
+       Start Confetti
+    ------------------------- */
+
+    createConfetti();
 
   }
 
 
-
-  /* =================================
-     CONFETTI
-  ================================= */
+  /* =========================
+     CREATE CONFETTI
+  ========================= */
 
   function createConfetti() {
 
@@ -428,25 +580,40 @@
     const colors = [
 
       "#FFD166",
+
       "#EF476F",
+
       "#06D6A0",
+
       "#118AB2",
+
       "#8338EC",
+
       "#FF9F1C",
+
       "#FF70A6",
+
       "#FFFFFF"
 
     ];
 
 
+    const pieces = 120;
+
+
     for (
+
       let i = 0;
-      i < 120;
+
+      i < pieces;
+
       i++
+
     ) {
 
 
       const piece =
+
         document.createElement(
           "div"
         );
@@ -456,92 +623,148 @@
         "piece";
 
 
-      /*
-
-        Random direction
-
-      */
+      /* -------------------------
+         Random Direction
+      ------------------------- */
 
       const angle =
+
         Math.random()
+
         * Math.PI
+
         * 2;
 
 
+      /* -------------------------
+         Random Distance
+      ------------------------- */
+
       const distance =
+
         300 +
-        Math.random() * 700;
+
+        Math.random() * 650;
 
 
       const x =
+
         Math.cos(angle)
+
         * distance;
 
 
       const y =
+
         Math.sin(angle)
+
         * distance;
 
 
+      /* -------------------------
+         Position
+      ------------------------- */
+
       piece.style.setProperty(
+
         "--x",
+
         x + "px"
+
       );
 
 
       piece.style.setProperty(
+
         "--y",
+
         y + "px"
+
       );
 
+
+      /* -------------------------
+         Rotation
+      ------------------------- */
 
       piece.style.setProperty(
-        "--rotate",
-        (Math.random() * 1000) + "deg"
+
+        "--rotation",
+
+        (
+
+          Math.random()
+
+          * 1200
+
+          - 600
+
+        ) + "deg"
+
       );
 
 
-      /*
-
-        Random color
-
-      */
+      /* -------------------------
+         Color
+      ------------------------- */
 
       piece.style.background =
+
         colors[
+
           Math.floor(
+
             Math.random()
+
             * colors.length
+
           )
+
         ];
 
 
-      /*
-
-        Random size
-
-      */
+      /* -------------------------
+         Size
+      ------------------------- */
 
       piece.style.width =
-        (5 + Math.random() * 8)
-        + "px";
+
+        (
+
+          5 +
+
+          Math.random() * 8
+
+        ) + "px";
 
 
       piece.style.height =
-        (8 + Math.random() * 15)
-        + "px";
+
+        (
+
+          8 +
+
+          Math.random() * 16
+
+        ) + "px";
 
 
-      /*
-
-        Random delay
-
-      */
+      /* -------------------------
+         Delay
+      ------------------------- */
 
       piece.style.animationDelay =
-        (Math.random() * 0.15)
-        + "s";
 
+        (
+
+          Math.random() * 0.12
+
+        ) + "s";
+
+
+      /* -------------------------
+         Add
+      ------------------------- */
 
       confetti.appendChild(
         piece
@@ -549,6 +772,10 @@
 
     }
 
+
+    /* -------------------------
+       Remove
+    ------------------------- */
 
     setTimeout(() => {
 
@@ -559,30 +786,170 @@
   }
 
 
+  /* =========================
+     PLAY SONG
+  ========================= */
 
-  /* =================================
-     BUTTON
-  ================================= */
+  function playSong() {
 
-  button.addEventListener(
-    "click",
-    function() {
-      startMusicAndOpenCanva();
+
+    song.volume = 1;
+
+
+    song.currentTime = 0;
+
+
+    const playPromise =
+      song.play();
+
+
+    if (
+      playPromise !== undefined
+    ) {
+
+      playPromise.catch(error => {
+
+        console.log(
+          "Audio play error:",
+          error
+        );
+
+      });
+
     }
+
+  }
+
+
+  /* =========================
+     SHOW CANVA
+  ========================= */
+
+  function showCanva() {
+
+
+    /* -------------------------
+       Load Canva
+    ------------------------- */
+
+    canvaFrame.src =
+      CANVA_URL;
+
+
+    /* -------------------------
+       Hide Video 2
+    ------------------------- */
+
+    video2.pause();
+
+
+    video2.style.display =
+      "none";
+
+
+    /* -------------------------
+       Hide Tap Area
+    ------------------------- */
+
+    tapArea.style.display =
+      "none";
+
+
+    /* -------------------------
+       Remove Confetti
+    ------------------------- */
+
+    confetti.innerHTML =
+      "";
+
+
+    /* -------------------------
+       Show Canva
+    ------------------------- */
+
+    canvaContainer.classList.add(
+      "show"
+    );
+
+  }
+
+
+  /* =========================
+     OPEN INVITATION
+    ========================= */
+
+  function openInvitation() {
+
+
+    /*
+      Only work during Video 2
+    */
+
+    if (
+
+      !video2.classList.contains(
+        "show"
+      )
+
+    ) {
+
+      return;
+
+    }
+
+
+    /*
+      IMPORTANT:
+
+      Audio starts directly
+      from the user's gesture.
+    */
+
+    playSong();
+
+
+    /*
+      Then show Canva.
+    */
+
+    showCanva();
+
+  }
+
+
+  /* =========================
+     DESKTOP CLICK
+  ========================= */
+
+  tapArea.addEventListener(
+
+    "click",
+
+    openInvitation
+
   );
 
-  container.addEventListener(
-    "click",
-    function(event) {
-      if(
-        event.target === button ||
-        event.target.closest("button")
-      ){
-        return;
-      }
 
-      startMusicAndOpenCanva();
+  /* =========================
+     MOBILE TOUCH
+  ========================= */
+
+  tapArea.addEventListener(
+
+    "touchend",
+
+    function(event) {
+
+      event.preventDefault();
+
+      openInvitation();
+
+    },
+
+    {
+      passive: false
     }
+
   );
 
 
