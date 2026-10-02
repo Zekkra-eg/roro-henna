@@ -312,15 +312,9 @@
 
       height: 46px;
 
-      border-radius: 50%;
+      border: none;
 
-      border: 1px solid rgba(255,255,255,0.35);
-
-      background: rgba(0,0,0,0.18);
-
-      backdrop-filter: blur(4px);
-
-      -webkit-backdrop-filter: blur(4px);
+      background: transparent;
 
       display: none;
 
@@ -335,9 +329,6 @@
       outline: none;
 
       -webkit-tap-highlight-color: transparent;
-
-      box-shadow:
-        0 4px 18px rgba(0,0,0,0.15);
 
       animation:
         soundButtonFloat
@@ -381,149 +372,20 @@
 
 
     /* =========================
-       REALISTIC SPEAKER ICON
+       SOUND ICON IMAGE
     ========================= */
 
-    .speakerIcon {
+    #soundButton img {
 
-      position: relative;
+      width: 100%;
 
-      width: 25px;
+      height: 100%;
 
-      height: 25px;
+      object-fit: contain;
 
       display: block;
 
-    }
-
-
-    /* Speaker box */
-
-    .speakerBody {
-
-      position: absolute;
-
-      left: 2px;
-
-      top: 9px;
-
-      width: 7px;
-
-      height: 8px;
-
-      background: white;
-
-      border-radius: 1.5px;
-
-    }
-
-
-    /* Speaker cone */
-
-    .speakerCone {
-
-      position: absolute;
-
-      left: 7px;
-
-      top: 5px;
-
-      width: 0;
-
-      height: 0;
-
-      border-top: 8px solid transparent;
-
-      border-bottom: 8px solid transparent;
-
-      border-right: 12px solid white;
-
-      transform: rotate(180deg);
-
-    }
-
-
-    /* Small sound wave */
-
-    .soundWave1 {
-
-      position: absolute;
-
-      top: 6px;
-
-      right: 4px;
-
-      width: 8px;
-
-      height: 13px;
-
-      border: 2px solid white;
-
-      border-left: 0;
-
-      border-top-color: transparent;
-
-      border-bottom-color: transparent;
-
-      border-radius: 0 50% 50% 0;
-
-    }
-
-
-    /* Large sound wave */
-
-    .soundWave2 {
-
-      position: absolute;
-
-      top: 3px;
-
-      right: 0;
-
-      width: 13px;
-
-      height: 19px;
-
-      border: 2px solid white;
-
-      border-left: 0;
-
-      border-top-color: transparent;
-
-      border-bottom-color: transparent;
-
-      border-radius: 0 50% 50% 0;
-
-    }
-
-
-    /* =========================
-       MUTED STATE
-    ========================= */
-
-    #soundButton.muted .soundWave1,
-    #soundButton.muted .soundWave2 {
-
-      display: none;
-
-    }
-
-
-    #soundButton.muted::after {
-
-      content: "";
-
-      position: absolute;
-
-      width: 25px;
-
-      height: 2px;
-
-      background: white;
-
-      border-radius: 2px;
-
-      transform: rotate(-45deg);
+      pointer-events: none;
 
     }
 
@@ -668,6 +530,8 @@
 
   <!-- =========================
        SOUND BUTTON
+       ON = on.png
+       OFF = off.png
   ========================= -->
 
   <button
@@ -676,17 +540,11 @@
     type="button"
   >
 
-    <span class="speakerIcon">
-
-      <span class="speakerBody"></span>
-
-      <span class="speakerCone"></span>
-
-      <span class="soundWave1"></span>
-
-      <span class="soundWave2"></span>
-
-    </span>
+    <img
+      id="soundIcon"
+      src="on.png"
+      alt=""
+    >
 
   </button>
 
@@ -738,6 +596,9 @@
   const soundButton =
     document.getElementById("soundButton");
 
+  const soundIcon =
+    document.getElementById("soundIcon");
+
   const canvaContainer =
     document.getElementById(
       "canvaContainer"
@@ -747,6 +608,17 @@
     document.getElementById(
       "canvaFrame"
     );
+
+
+  /* =========================
+     SOUND ICONS
+     ========================= */
+
+  const SOUND_ON =
+    "on.png";
+
+  const SOUND_OFF =
+    "off.png";
 
 
   /* =========================
@@ -985,9 +857,8 @@
       );
 
 
-      soundButton.classList.remove(
-        "muted"
-      );
+      soundIcon.src =
+        SOUND_ON;
 
 
       console.log(
@@ -1032,9 +903,8 @@
 
           await audio.play();
 
-          soundButton.classList.remove(
-            "muted"
-          );
+          soundIcon.src =
+            SOUND_ON;
 
         }
 
@@ -1053,9 +923,8 @@
 
         audio.pause();
 
-        soundButton.classList.add(
-          "muted"
-        );
+        soundIcon.src =
+          SOUND_OFF;
 
       }
 
@@ -1152,16 +1021,15 @@
 
 
   /* =====================================================
-     KEEP BUTTON IN SYNC
+     KEEP ICON IN SYNC
      ===================================================== */
 
   audio.addEventListener(
     "play",
     function () {
 
-      soundButton.classList.remove(
-        "muted"
-      );
+      soundIcon.src =
+        SOUND_ON;
 
     }
   );
@@ -1171,9 +1039,8 @@
     "pause",
     function () {
 
-      soundButton.classList.add(
-        "muted"
-      );
+      soundIcon.src =
+        SOUND_OFF;
 
     }
   );
