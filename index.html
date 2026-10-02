@@ -252,6 +252,49 @@
 
 
     /* =========================
+       SOUND ERROR / FALLBACK
+    ========================= */
+
+    #soundMessage {
+
+      position: fixed;
+
+      z-index: 200;
+
+      left: 50%;
+      bottom: 30px;
+
+      transform: translateX(-50%);
+
+      display: none;
+
+      padding: 12px 20px;
+
+      border-radius: 30px;
+
+      background: rgba(0,0,0,0.85);
+
+      color: white;
+
+      font-family: Arial, sans-serif;
+
+      font-size: 14px;
+
+      text-align: center;
+
+      white-space: nowrap;
+
+    }
+
+
+    #soundMessage.show {
+
+      display: block;
+
+    }
+
+
+    /* =========================
        CANVA
     ========================= */
 
@@ -381,6 +424,15 @@
 
 
   <!-- =========================
+       SOUND MESSAGE
+  ========================= -->
+
+  <div id="soundMessage">
+    Tap again to play the music
+  </div>
+
+
+  <!-- =========================
        CANVA
   ========================= -->
 
@@ -409,28 +461,25 @@
   const video1 =
     document.getElementById("video1");
 
-
   const video2 =
     document.getElementById("video2");
-
 
   const audio =
     document.getElementById("bg-music");
 
-
   const confetti =
     document.getElementById("confetti");
-
 
   const tapArea =
     document.getElementById("tapArea");
 
+  const soundMessage =
+    document.getElementById("soundMessage");
 
   const canvaContainer =
     document.getElementById(
       "canvaContainer"
     );
-
 
   const canvaFrame =
     document.getElementById(
@@ -544,7 +593,6 @@
       i++
     ) {
 
-
       const piece =
         document.createElement(
           "div"
@@ -642,85 +690,82 @@
   }
 
 
-  /* =========================
-     PLAY MUSIC
-     ========================= */
+  /* =====================================================
+     AUDIO
+     ===================================================== */
 
-  function playMusic() {
+  let audioStarted = false;
+
+
+  async function startMusic() {
+
+    if (audioStarted) {
+
+      return true;
+
+    }
+
 
     /*
-      Same method as your
-      working Safari example.
+      IMPORTANT:
 
-      No load()
-      No timeout
-      No pointerdown
+      This function is called directly
+      from the user's click.
     */
 
     audio.volume = 1;
 
-    audio.play().catch(err => {
+    audio.muted = false;
 
-      console.warn(
-        "Audio:",
-        err
+
+    try {
+
+      await audio.play();
+
+      audioStarted = true;
+
+      console.log(
+        "HTML AUDIO STARTED"
       );
 
-    });
+      return true;
+
+    }
+
+    catch (error) {
+
+      console.warn(
+        "HTML audio failed:",
+        error
+      );
+
+      return false;
+
+    }
 
   }
 
 
-  /* =========================
+  /* =====================================================
      SHOW CANVA
-     ========================= */
+     ===================================================== */
 
   function showCanva() {
 
-
-    /*
-      Stop Video 2
-    */
-
     video2.pause();
-
-
-    /*
-      Hide Video 2
-    */
 
     video2.style.display =
       "none";
 
-
-    /*
-      Hide tap area
-    */
-
     tapArea.style.display =
       "none";
-
-
-    /*
-      Remove confetti
-    */
 
     confetti.innerHTML =
       "";
 
-
-    /*
-      Show Canva
-    */
-
     canvaContainer.classList.add(
       "show"
     );
-
-
-    /*
-      Load Canva
-    */
 
     canvaFrame.src =
       CANVA_URL;
@@ -728,16 +773,16 @@
   }
 
 
-  /* =========================
+  /* =====================================================
      OPEN INVITATION
-  ========================= */
+     ===================================================== */
 
   let opened = false;
 
 
   tapArea.addEventListener(
     "click",
-    () => {
+    async function () {
 
 
       if (opened) {
@@ -758,30 +803,55 @@
       }
 
 
-      opened = true;
+      /*
+        VERY IMPORTANT:
+
+        Nothing happens before this.
+
+        The user click directly calls
+        audio.play().
+      */
+
+      const started =
+        await startMusic();
 
 
       /*
-        IMPORTANT:
-
-        This is the FIRST action
-        inside the real click.
-
-        Safari receives the
-        audio play directly
-        from the user's gesture.
+        If Safari accepted the audio,
+        THEN open Canva.
       */
 
-      playMusic();
+      if (started) {
+
+        opened = true;
+
+        soundMessage.classList.remove(
+          "show"
+        );
+
+        showCanva();
+
+        return;
+
+      }
 
 
       /*
-        Then open Canva.
+        Safari rejected the audio.
+
+        Do NOT open Canva yet.
+
+        Ask for another direct tap.
       */
 
-      showCanva();
+      soundMessage.classList.add(
+        "show"
+      );
 
 
+    },
+    {
+      passive: true
     }
   );
 
